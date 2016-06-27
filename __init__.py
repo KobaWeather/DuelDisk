@@ -18,23 +18,30 @@ box = (29,55,141,167)
 local_place = "/Volumes/NO NAME/"
 place = local_place+"Ygopro/"
 
+def select_deck(deck_name):
+	deck_name = place+"deck/"+deck_name
+	return [int(i.strip("\n")) for i in open(deck_name,"r").readlines() if not("e" in i or "a" in i)]
+
 def create_deck():
-	if argc >= 3:
-		deck_name = place+"deck/"+argvs[-1]
+	f = open("data.txt","r")
+	if ".ydk" in argvs[-1]: #デッキ縛り
 		#デッキの取得
-		deck = [int(i.strip("\n")) for i in open(deck_name,"r").readlines() if not("e" in i or "a" in i)]
+		deck = select_deck(argvs[-1])
 		#重複削除
 		ones = list(set(deck))
 		#比較データの取得
-		f = open("data.txt","r")
 		data = [i.split(",") for i in f.readlines() if int(i.split(",")[0]) in ones]
-		f.close()
+	
+	elif argvs[-1] == "monster": #モンスター縛り
+		con = sq.connect("/Volumes/NO NAME/Ygopro/cards.cdb")
+		c = con.cursor()
+		monster = [i[0] for i in c.execute("select id,type from datas") if i[1]%2 != 0]
+		data = [i.split(",") for i in f.readlines() if int(i.split(",")[0]) in monster]
 	
 	else:#デッキ縛りしない場合はこっち
-		f = open("data.txt","r")
 		data = [i.split(",") for i in f.readlines() if int(i.split(",")[0])]
-		f.close()
-		
+
+	f.close()		
 	return data
 
 #スクリプトデータの取得
