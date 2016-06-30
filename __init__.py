@@ -19,21 +19,20 @@ local_place = "/Volumes/NO NAME/"
 place = local_place+"Ygopro/"
 
 def select_deck(deck_name):
-	deck_name = place+"deck/"+deck_name
-	return [int(i.strip("\n")) for i in open(deck_name,"r").readlines() if not("e" in i or "a" in i)]
+	return [int(i.strip("\n")) for i in open(deck_name,"r").readlines() if i.strip("\n").isdigit()]
 
 def create_deck():
 	f = open("data.txt","r")
 	if ".ydk" in argvs[-1]: #デッキ縛り
 		#デッキの取得
-		deck = select_deck(argvs[-1])
+		deck = select_deck(place+"deck/"+argvs[-1])
 		#重複削除
 		ones = list(set(deck))
 		#比較データの取得
 		data = [i.split(",") for i in f.readlines() if int(i.split(",")[0]) in ones]
 	
 	elif argvs[-1] == "monster": #モンスター縛り
-		con = sq.connect("/Volumes/NO NAME/Ygopro/cards.cdb")
+		con = sq.connect(place+"cards.cdb")
 		c = con.cursor()
 		monster = [i[0] for i in c.execute("select id,type from datas") if i[1]%2 != 0]
 		data = [i.split(",") for i in f.readlines() if int(i.split(",")[0]) in monster]

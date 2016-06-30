@@ -16,8 +16,9 @@ lists = [i for i in os.listdir(place+"pics/") if ".jpg" in i and "._" not in i a
 all = dict([(i.strip(".jpg"),Image.open(place+"pics/"+i).resize((177,254), Image.ANTIALIAS).crop(box).convert("L")) for i in lists if i != "99940363.jpg"])
 
 #縮小&データ取得
-for i in all:
-	data.append([i,avhash(all[i].resize((SIZE,SIZE)))])
+new_data = [[i,avhash(all[i].resize((SIZE,SIZE)))] for i in all]
+
+data = data + new_data
 
 #data = [[i,avhash(all[i].resize((SIZE,SIZE)))] for i in all]
 

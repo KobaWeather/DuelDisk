@@ -2,7 +2,9 @@
 #! -*- coding:utf-8 -*-
 
 from __init__ import *
+import time
 
+start = time.time()
 #比較用データの取得
 data = create_deck()
 
@@ -10,8 +12,6 @@ data = create_deck()
 h = Image.open(argvs[1]).convert("L")
 h = h.resize((177,254),Image.ANTIALIAS).crop(box)
 h = h.resize((SIZE,SIZE))
-#h.save("gray.png")
-#h.convert("1").save("one.png")
 h = avhash(h)
 
 
@@ -29,7 +29,12 @@ card = [f for f, ham in sorted(seg, key=lambda i: i[1])[:5]]
 decide_card = card[0]
 
 print "\nカード番号:\n",decide_card
-Image.open(place+"pics/"+decide_card+".jpg").show()
+
+for num,i in enumerate(card):
+	#Image.open(place+"pics/"+i+".jpg").show()
+	Image.open(place+"pics/"+i+".jpg").save("resullt"+str(num)+".png")
+
+#Image.open(place+"pics/"+decide_card+".jpg").show()
 #Image.open(place+"pics/"+decide_card+".jpg").save("resullt.png")
 
 #スクリプトデータの取得
@@ -52,7 +57,6 @@ cdb_place = place+"/expansions/live/"
 cdb = [c,place+"/expansions/cards-tf.cdb"]+[cdb_place+base for base in os.listdir(cdb_place) if ".cdb" in base]
 
 data = []
-#通常のcdbで見つからなかった時はliveフォルダ内のcdbから検索
 for base in cdb:
 	if len(data) == 0:
 		data,text = search_cdb(base,decide_card)
@@ -63,6 +67,7 @@ for base in cdb:
 print "\nカード名:\n",text[0][0]
 print "\nカード効果:\n",text[0][1]
 
+print ("elapsed_time:{0}".format(time.time() - start))+"[sec]"
 
 
 #http://www3.atwiki.jp/ads-wiki/pages/30.html
